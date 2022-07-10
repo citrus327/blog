@@ -2,11 +2,16 @@ import Image from "next/image";
 import styles from "./index.module.scss";
 import blogConfigs from "../../blog.config";
 
+const myLoader = ({ src }) => {
+  return `https://avatars.githubusercontent.com/u/${src}?v=4`;
+};
+
 export const Avatar = () => {
   return (
     <div className={styles.avatar}>
       <Image
-        src="https://avatars.githubusercontent.com/u/17166940?v=4"
+        loader={myLoader}
+        src="17166940"
         alt="avatar"
         width="24px"
         height="24px"
