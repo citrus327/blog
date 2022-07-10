@@ -3,37 +3,31 @@
   padding: 0 2rem;
   width: calc(100vw - 24px);
   min-height: 100vh;
-  padding: 0rem 12rem;
+  margin: 0rem 12rem;
   flex: 1;
   display: flex;
   flex-direction: column;
 
   @media screen and (max-width: 2560px) {
-    padding: 0rem 24rem;
+    margin: 0rem 24rem;
   }
 
   @media screen and (max-width: 1440px) {
-    padding: 0rem 9rem;
+    margin: 0rem 9rem;
   }
 
   @media screen and (max-width: 1024px) {
-    padding: 0rem 6rem;
+    margin: 0rem 6rem;
   }
 
   @media screen and (max-width: 768px) {
-    padding: 0rem 3rem;
+    margin: 0rem 3rem;
   }
 
   @media screen and (max-width: 425px) {
-    padding: 0rem 0rem;
+    margin: 0rem 0rem;
   }
 }
-
-.main {
-  position: absolute;
-  top: calc(40px * 2 + 24px);
-}
-
 
 .header {
   position: fixed;
@@ -41,8 +35,13 @@
   z-index: 9999;
   background-color: white;
   display: flex;
-  margin-bottom: 24px;
   justify-content: space-between;
   height: 24px;
   padding: 40px 0px;
+  margin-bottom: 24px;
 }
+.main {
+  position: absolute;
+  top: calc(40px * 2 + 24px);
+}
+
