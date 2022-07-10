@@ -12,13 +12,12 @@ export default function Layout({ children }) {
         <meta name="description" content="Minimal Life Blog" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={styles.main}>
-        <header className={styles.header}>
-          <Avatar />
-          <Navbar />
-        </header>
-        <main>{children}</main>
-      </div>
+      <header className={styles.header}>
+        <Avatar />
+        <Navbar />
+      </header>
+      <main className={styles.main}>{children}</main>
+      {/* <footer>123</footer> */}
     </div>
   );
 }
