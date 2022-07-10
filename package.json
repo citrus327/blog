@@ -8,6 +8,7 @@
     "export": "next export"
   },
   "dependencies": {
+    "animate.css": "^4.1.1",
     "lodash-es": "^4.17.21",
     "next": "12.1.4",
     "react": "18.0.0",

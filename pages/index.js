@@ -16,7 +16,7 @@ export default function Home(props) {
           fontSize: "40px",
         }}
       >
-        <div>{`/* Fill Later */`}</div>
+        <div className="animate__animated animate__pulse animate__infinite">{`/* Hi. */`}</div>
       </div>
     </Layout>
   );
