@@ -14,6 +14,8 @@ jobs:
           node-version: 16
       - name: Install dependencies
         run: npm install
+      - name: Build
+        run: npm run build
       - name: Export Static Files
         run: npm run export
       - name: Deploy with gh-pages
