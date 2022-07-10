@@ -1,0 +1,14 @@
+.nav {
+  a {
+    text-decoration: none;
+  }
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+
+  .nav + .nav {
+    margin-left: 24px;
+  }
+}

@@ -1,8 +1,9 @@
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
+import { Avatar } from "../Avatar";
+import { Navbar } from "../Navbar";
 import styles from "./index.module.scss";
-
 export default function Layout({ children }) {
   return (
     <div className={styles.container}>
@@ -13,16 +14,8 @@ export default function Layout({ children }) {
       </Head>
       <div className={styles.main}>
         <header className={styles.header}>
-          {[
-            { label: "Home", value: "/" },
-            { label: "Posts", value: "/posts" },
-          ].map((o) => {
-            return (
-              <nav key={o.value} className={styles.nav}>
-                <Link href={o.value}>{o.label}</Link>
-              </nav>
-            );
-          })}
+          <Avatar />
+          <Navbar />
         </header>
         <main>{children}</main>
       </div>
