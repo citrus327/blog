@@ -1,0 +1,9 @@
+.listItem {
+  color: #333;
+}
+
+.listItemContainer {
+  .listItem + .listItem {
+    margin-top: 12px;
+  }
+}
