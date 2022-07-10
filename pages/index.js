@@ -16,7 +16,7 @@ export default function Home(props) {
           fontSize: "40px",
         }}
       >
-        <div>{`/* Filled Later */`}</div>
+        <div>{`/* Fill Later */`}</div>
       </div>
     </Layout>
   );
