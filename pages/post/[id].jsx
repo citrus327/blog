@@ -6,6 +6,7 @@ const Post = (props) => {
   return (
     <Layout>
       <div
+        className="markdown-body"
         dangerouslySetInnerHTML={{
           __html: props.html,
         }}

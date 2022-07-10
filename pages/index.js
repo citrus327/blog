@@ -6,7 +6,18 @@ export default function Home(props) {
   const { data } = props;
   return (
     <Layout>
-      <RecentList title="Posts" data={data} />
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "40px",
+        }}
+      >
+        <div>{`/* Filled Later */`}</div>
+      </div>
     </Layout>
   );
 }
