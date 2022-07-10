@@ -1,0 +1,229 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"/><meta charSet="utf-8"/><title>Minimal Life</title><meta name="description" content="Minimal Life Blog"/><link rel="icon" href="/favicon.ico"/><meta name="next-head-count" content="5"/><link rel="preload" href="/blog/_next/static/css/06659d724bcc9fc1.css" as="style"/><link rel="stylesheet" href="/blog/_next/static/css/06659d724bcc9fc1.css" data-n-g=""/><link rel="preload" href="/blog/_next/static/css/d3a6bbe7d005ad1c.css" as="style"/><link rel="stylesheet" href="/blog/_next/static/css/d3a6bbe7d005ad1c.css" data-n-p=""/><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/blog/_next/static/chunks/polyfills-5cd94c89d3acac5f.js"></script><script src="/blog/_next/static/chunks/webpack-4d5208940e01a3dc.js" defer=""></script><script src="/blog/_next/static/chunks/framework-00b57966872fc495.js" defer=""></script><script src="/blog/_next/static/chunks/main-04fa69cd18d105e9.js" defer=""></script><script src="/blog/_next/static/chunks/pages/_app-f55443f2448c8e66.js" defer=""></script><script src="/blog/_next/static/chunks/247-b84c2316c963d09c.js" defer=""></script><script src="/blog/_next/static/chunks/pages/post/%5Bid%5D-96e34488d9b26273.js" defer=""></script><script src="/blog/_next/static/PBrnuE0mkYHGFXQo1frw9/_buildManifest.js" defer=""></script><script src="/blog/_next/static/PBrnuE0mkYHGFXQo1frw9/_ssgManifest.js" defer=""></script><script src="/blog/_next/static/PBrnuE0mkYHGFXQo1frw9/_middlewareManifest.js" defer=""></script></head><body><div id="__next"><div><header class="Layout_header__TY1Ur"><div class="Avatar_avatar__Wqsgs"><span style="box-sizing:border-box;display:inline-block;overflow:hidden;width:initial;height:initial;background:none;opacity:1;border:0;margin:0;padding:0;position:relative;max-width:100%"><span style="box-sizing:border-box;display:block;width:initial;height:initial;background:none;opacity:1;border:0;margin:0;padding:0;max-width:100%"><img style="display:block;max-width:100%;width:initial;height:initial;background:none;opacity:1;border:0;margin:0;padding:0" alt="" aria-hidden="true" src="data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20version=%271.1%27%20width=%2724%27%20height=%2724%27/%3e"/></span><img alt="avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" decoding="async" data-nimg="intrinsic" class="Avatar_img__fPm7S" style="position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max-width:100%;min-height:100%;max-height:100%"/><noscript><img alt="avatar" srcSet="https://avatars.githubusercontent.com/u/17166940?v=4 1x, https://avatars.githubusercontent.com/u/17166940?v=4 2x" src="https://avatars.githubusercontent.com/u/17166940?v=4" decoding="async" data-nimg="intrinsic" style="position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max-width:100%;min-height:100%;max-height:100%" class="Avatar_img__fPm7S" loading="lazy"/></noscript></span><div class="Avatar_username__94Fmm">phshy0607</div></div><div class="Navbar_navbar__dE_dF"><nav class="Navbar_nav__lgcdH"><a href="/blog">Home</a></nav><nav class="Navbar_nav__lgcdH"><a href="/blog/posts">Posts</a></nav></div></header><main class="Layout_main__CO5d2"><div><h2 dir="auto">Ownership</h2>
+<p dir="auto">关于内存和GC的说明</p>
+<blockquote>
+<p dir="auto">All programs have to manage the way they use a computer’s memory while running. Some languages have garbage collection that constantly looks for no longer used memory as the program runs; in other languages, the programmer must explicitly allocate and free the memory. Rust uses a third approach: memory is managed through a system of ownership with a set of rules that the compiler checks at compile time. None of the ownership features slow down your program while it’s running.</p>
+</blockquote>
+<p dir="auto">关于stack和heap</p>
+<blockquote>
+<p dir="auto">All data stored on the stack must have a known, fixed size. Data with an unknown size at compile time or a size that might change must be stored on the heap instead.</p>
+</blockquote>
+<p dir="auto">关于Rust的GC</p>
+<div class="highlight highlight-source-rust notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="{
+  let s = String::from(&quot;hello&quot;); // s is valid from this point forward
+  // do stuff with s
+}                                // this scope is now over, and s is no
+                                 // longer valid"><pre>{
+  <span class="pl-k">let</span> s <span class="pl-k">=</span> <span class="pl-k">String</span><span class="pl-k">::</span><span class="pl-en">from</span>(<span class="pl-s">"hello"</span>); <span class="pl-c">// s is valid from this point forward</span>
+  <span class="pl-c">// do stuff with s</span>
+}                                <span class="pl-c">// this scope is now over, and s is no</span>
+                                 <span class="pl-c">// longer valid</span></pre></div>
+<blockquote>
+<p dir="auto">Rust takes a different path: the memory is automatically returned once the variable that owns it goes out of scope.<br>
+There is a natural point at which we can return the memory our <code class="notranslate">String</code> needs to the allocator: when <code class="notranslate">s</code> goes out of scope.</p>
+</blockquote>
+<h2 dir="auto">Move</h2>
+<div class="highlight highlight-source-rust notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="let s1 = String::from(&quot;hello&quot;);
+let s2 = s1;
+
+println!(&quot;{}, world!&quot;, s1); // error"><pre><span class="pl-k">let</span> s1 <span class="pl-k">=</span> <span class="pl-k">String</span><span class="pl-k">::</span><span class="pl-en">from</span>(<span class="pl-s">"hello"</span>);
+<span class="pl-k">let</span> s2 <span class="pl-k">=</span> s1;
+
+<span class="pl-c1">println!</span>(<span class="pl-s">"{}, world!"</span>, s1); <span class="pl-c">// error</span></pre></div>
+<p dir="auto">当S1定义后，S2跟S1指向同一个heap variable。</p>
+<p dir="auto">正常情况，gc时，会去gc s1，然后gc s1对应的heap variable。再去gc s2的时候，s2指向的heap variable已经被gc了。就会导致memory corruption。</p>
+<p dir="auto">为了解决这个问题，Rust采用一种叫做move的策略。当s1定义完，s2指向s1的时候，s1自动变成invalid，即不再有效。</p>
+<p dir="auto">针对stack-only data type，这些type会有一个特殊的anotation叫做Copy的Trait，具有copy trait的类型，可以在move之后继续使用。</p>
+<blockquote>
+<p dir="auto">Here are some of the types that are <code class="notranslate">Copy</code>:</p>
+<ul dir="auto">
+<li>All the integer types, such as <code class="notranslate">u32</code>.</li>
+<li>The Boolean type, <code class="notranslate">bool</code>, with values <code class="notranslate">true</code> and <code class="notranslate">false</code>.</li>
+<li>All the floating point types, such as <code class="notranslate">f64</code>.</li>
+<li>The character type, <code class="notranslate">char</code>.</li>
+<li>Tuples, if they only contain types that are also <code class="notranslate">Copy</code>. For example, <code class="notranslate">(i32, i32)</code> is <code class="notranslate">Copy</code>, but <code class="notranslate">(i32, String)</code> is not.</li>
+</ul>
+</blockquote>
+<h2 dir="auto">Drop</h2>
+<p dir="auto">当一个变量out of scope，Rust会自动call一个叫drop的function来帮助gc。</p>
+<div class="highlight highlight-source-rust notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="fn main() {
+    let s = String::from(&quot;hello&quot;);
+    takes_ownership(s);
+  	println!(&quot;{}&quot;, s); // error: borrow of moved value: `s`
+    let x = 5;                    
+    makes_copy(x);             
+  	println!(&quot;{}&quot;, x); // fine
+} 
+fn takes_ownership(some_string: String) {
+    println!(&quot;{}&quot;, some_string);
+} 
+fn makes_copy(some_integer: i32) { 
+    println!(&quot;{}&quot;, some_integer);
+}"><pre><span class="pl-k">fn</span> <span class="pl-en">main</span>() {
+    <span class="pl-k">let</span> s <span class="pl-k">=</span> <span class="pl-k">String</span><span class="pl-k">::</span><span class="pl-en">from</span>(<span class="pl-s">"hello"</span>);
+    <span class="pl-en">takes_ownership</span>(s);
+  	<span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, s); <span class="pl-c">// error: borrow of moved value: `s`</span>
+    <span class="pl-k">let</span> x <span class="pl-k">=</span> <span class="pl-c1">5</span>;                    
+    <span class="pl-en">makes_copy</span>(x);             
+  	<span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, x); <span class="pl-c">// fine</span>
+} 
+<span class="pl-k">fn</span> <span class="pl-en">takes_ownership</span>(some_string: <span class="pl-k">String</span>) {
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, some_string);
+} 
+<span class="pl-k">fn</span> <span class="pl-en">makes_copy</span>(some_integer: <span class="pl-k">i32</span>) { 
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, some_integer);
+}</pre></div>
+<p dir="auto">第二行定义了s，调用<code class="notranslate">takes_ownership</code>，在第10行打印完后，some_string会out of scope, 因此被drop，</p>
+<p dir="auto">第四行定义了x，integer是拥有Copy Trait Anotation的类型，所以可以继续使用</p>
+<p dir="auto">想要解决第四行这个问题，可以让takes_ownership函数返回一个string，从而达到Transfer Ownership的意义。</p>
+<div class="highlight highlight-source-rust notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="fn main() {
+    let s = String::from(&quot;hello&quot;);
+    let s = transfer_ownership(s);
+  	println!(&quot;{}&quot;, s); // fine
+    let x = 5;                    
+    makes_copy(x);             
+  	println!(&quot;{}&quot;, x); // fine
+} 
+fn transfer_ownership(some_string: String) -&gt; String {
+    println!(&quot;{}&quot;, some_string);
+    return some_string
+} 
+fn makes_copy(some_integer: i32) { 
+    println!(&quot;{}&quot;, some_integer);
+}"><pre><span class="pl-k">fn</span> <span class="pl-en">main</span>() {
+    <span class="pl-k">let</span> s <span class="pl-k">=</span> <span class="pl-k">String</span><span class="pl-k">::</span><span class="pl-en">from</span>(<span class="pl-s">"hello"</span>);
+    <span class="pl-k">let</span> s <span class="pl-k">=</span> <span class="pl-en">transfer_ownership</span>(s);
+  	<span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, s); <span class="pl-c">// fine</span>
+    <span class="pl-k">let</span> x <span class="pl-k">=</span> <span class="pl-c1">5</span>;                    
+    <span class="pl-en">makes_copy</span>(x);             
+  	<span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, x); <span class="pl-c">// fine</span>
+} 
+<span class="pl-k">fn</span> <span class="pl-en">transfer_ownership</span>(some_string: <span class="pl-k">String</span>) -&gt; <span class="pl-k">String</span> {
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, some_string);
+    <span class="pl-k">return</span> some_string
+} 
+<span class="pl-k">fn</span> <span class="pl-en">makes_copy</span>(some_integer: <span class="pl-k">i32</span>) { 
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, some_integer);
+}</pre></div>
+<h2 dir="auto">Reference and Borrowing</h2>
+<p dir="auto">同时上述问题可以使用reference来解决。</p>
+<div class="highlight highlight-source-rust notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="fn main() {
+    let s = String::from(&quot;hello&quot;);
+    print_string(&amp;s); // 传入引用，而不是move
+  	println!(&quot;{}&quot;, s); // fine
+    let x = 5;                    
+    makes_copy(x);             
+  	println!(&quot;{}&quot;, x); // fine
+} 
+fn print_string(some_string: &amp;String) { // 接受一个&amp;String类型的string
+    println!(&quot;{}&quot;, some_string);
+} 
+
+fn makes_copy(some_integer: i32) { 
+    println!(&quot;{}&quot;, some_integer);
+}"><pre><span class="pl-k">fn</span> <span class="pl-en">main</span>() {
+    <span class="pl-k">let</span> s <span class="pl-k">=</span> <span class="pl-k">String</span><span class="pl-k">::</span><span class="pl-en">from</span>(<span class="pl-s">"hello"</span>);
+    <span class="pl-en">print_string</span>(<span class="pl-k">&amp;</span>s); <span class="pl-c">// 传入引用，而不是move</span>
+  	<span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, s); <span class="pl-c">// fine</span>
+    <span class="pl-k">let</span> x <span class="pl-k">=</span> <span class="pl-c1">5</span>;                    
+    <span class="pl-en">makes_copy</span>(x);             
+  	<span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, x); <span class="pl-c">// fine</span>
+} 
+<span class="pl-k">fn</span> <span class="pl-en">print_string</span>(some_string: <span class="pl-k">&amp;</span><span class="pl-k">String</span>) { <span class="pl-c">// 接受一个&amp;String类型的string</span>
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, some_string);
+} 
+
+<span class="pl-k">fn</span> <span class="pl-en">makes_copy</span>(some_integer: <span class="pl-k">i32</span>) { 
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, some_integer);
+}</pre></div>
+<p dir="auto">reference不会被不拥有ownership的scope drop掉，例如print_string不拥有some_string的ownership，那他就不能drop，只有在main函数执行完才会被drop</p>
+<blockquote>
+<p dir="auto">We call having references as function parameters <em>borrowing</em></p>
+</blockquote>
+<p dir="auto">在传入reference的时候，如果想要修改对应reference的值，可以添加mut</p>
+<div class="highlight highlight-source-rust notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="fn main() {
+    let mut s = String::from(&quot;hello&quot;);
+  	println!(&quot;original string: {}&quot;, s); 
+    print_string(&amp;mut s);
+  	println!(&quot;after change in print string: {}&quot;, s); // fine
+    let x = 5;                    
+    makes_copy(x);             
+  	println!(&quot;{}&quot;, x); // fine
+} 
+fn print_string(some_string: &amp;mut String) { // 接受一个&amp;mut String类型的string
+    some_string.push_str(&quot;, world&quot;);
+    println!(&quot;{}&quot;, some_string);
+} 
+
+fn makes_copy(some_integer: i32) { 
+    println!(&quot;{}&quot;, some_integer);
+}"><pre><span class="pl-k">fn</span> <span class="pl-en">main</span>() {
+    <span class="pl-k">let</span> <span class="pl-k">mut</span> s <span class="pl-k">=</span> <span class="pl-k">String</span><span class="pl-k">::</span><span class="pl-en">from</span>(<span class="pl-s">"hello"</span>);
+  	<span class="pl-c1">println!</span>(<span class="pl-s">"original string: {}"</span>, s); 
+    <span class="pl-en">print_string</span>(<span class="pl-k">&amp;</span><span class="pl-k">mut</span> s);
+  	<span class="pl-c1">println!</span>(<span class="pl-s">"after change in print string: {}"</span>, s); <span class="pl-c">// fine</span>
+    <span class="pl-k">let</span> x <span class="pl-k">=</span> <span class="pl-c1">5</span>;                    
+    <span class="pl-en">makes_copy</span>(x);             
+  	<span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, x); <span class="pl-c">// fine</span>
+} 
+<span class="pl-k">fn</span> <span class="pl-en">print_string</span>(some_string: <span class="pl-k">&amp;</span><span class="pl-k">mut</span> <span class="pl-k">String</span>) { <span class="pl-c">// 接受一个&amp;mut String类型的string</span>
+    some_string.<span class="pl-en">push_str</span>(<span class="pl-s">", world"</span>);
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, some_string);
+} 
+
+<span class="pl-k">fn</span> <span class="pl-en">makes_copy</span>(some_integer: <span class="pl-k">i32</span>) { 
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, some_integer);
+}</pre></div>
+<blockquote>
+<p dir="auto">But mutable references have one big restriction: you can have only one mutable reference to a particular piece of data in a particular scope.</p>
+</blockquote>
+<div class="highlight highlight-source-rust notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="fn main () {
+    let mut s = String::from(&quot;hello&quot;);
+    let r1 = &amp;mut s;
+    let r2 = &amp;mut s; // error: cannot borrow `s` as mutable more than once at a time
+
+    println!(&quot;{}, {}&quot;, r1, r2);
+}"><pre><span class="pl-k">fn</span> <span class="pl-en">main</span> () {
+    <span class="pl-k">let</span> <span class="pl-k">mut</span> s <span class="pl-k">=</span> <span class="pl-k">String</span><span class="pl-k">::</span><span class="pl-en">from</span>(<span class="pl-s">"hello"</span>);
+    <span class="pl-k">let</span> r1 <span class="pl-k">=</span> <span class="pl-k">&amp;</span><span class="pl-k">mut</span> s;
+    <span class="pl-k">let</span> r2 <span class="pl-k">=</span> <span class="pl-k">&amp;</span><span class="pl-k">mut</span> s; <span class="pl-c">// error: cannot borrow `s` as mutable more than once at a time</span>
+
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}, {}"</span>, r1, r2);
+}</pre></div>
+<blockquote>
+<p dir="auto">The benefit of having this restriction is that Rust can prevent data races at compile time.</p>
+</blockquote>
+<div class="highlight highlight-source-rust notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="fn main () {
+    let mut s = String::from(&quot;hello&quot;);
+
+    let r1 = &amp;s; // no problem
+    let r2 = &amp;s; // no problem
+    println!(&quot;{} and {}&quot;, r1, r2);
+    // r1 and r2 are no longer used after this point
+    
+    let r3 = &amp;mut s; // no problem
+    println!(&quot;{}&quot;, r3);
+}"><pre><span class="pl-k">fn</span> <span class="pl-en">main</span> () {
+    <span class="pl-k">let</span> <span class="pl-k">mut</span> s <span class="pl-k">=</span> <span class="pl-k">String</span><span class="pl-k">::</span><span class="pl-en">from</span>(<span class="pl-s">"hello"</span>);
+
+    <span class="pl-k">let</span> r1 <span class="pl-k">=</span> <span class="pl-k">&amp;</span>s; <span class="pl-c">// no problem</span>
+    <span class="pl-k">let</span> r2 <span class="pl-k">=</span> <span class="pl-k">&amp;</span>s; <span class="pl-c">// no problem</span>
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{} and {}"</span>, r1, r2);
+    <span class="pl-c">// r1 and r2 are no longer used after this point</span>
+    
+    <span class="pl-k">let</span> r3 <span class="pl-k">=</span> <span class="pl-k">&amp;</span><span class="pl-k">mut</span> s; <span class="pl-c">// no problem</span>
+    <span class="pl-c1">println!</span>(<span class="pl-s">"{}"</span>, r3);
+}</pre></div>
+<h2 dir="auto">Dangling Pointer</h2>
+<div class="highlight highlight-source-rust notranslate position-relative overflow-auto" data-snippet-clipboard-copy-content="fn dangle() -&gt; &amp;String { // dangle returns a reference to a String
+
+    let s = String::from(&quot;hello&quot;); // s is a new String
+
+    &amp;s // we return a reference to the String, s
+} // Here, s goes out of scope, and is dropped. Its memory goes away.
+  // Danger!"><pre><span class="pl-k">fn</span> <span class="pl-en">dangle</span>() -&gt; <span class="pl-k">&amp;</span><span class="pl-k">String</span> { <span class="pl-c">// dangle returns a reference to a String</span>
+
+    <span class="pl-k">let</span> s <span class="pl-k">=</span> <span class="pl-k">String</span><span class="pl-k">::</span><span class="pl-en">from</span>(<span class="pl-s">"hello"</span>); <span class="pl-c">// s is a new String</span>
+
+    <span class="pl-k">&amp;</span>s <span class="pl-c">// we return a reference to the String, s</span>
+} <span class="pl-c">// Here, s goes out of scope, and is dropped. Its memory goes away.</span>
+  <span class="pl-c">// Danger!</span></pre></div></div></main></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"html":"\u003ch2 dir=\"auto\"\u003eOwnership\u003c/h2\u003e\n\u003cp dir=\"auto\"\u003e关于内存和GC的说明\u003c/p\u003e\n\u003cblockquote\u003e\n\u003cp dir=\"auto\"\u003eAll programs have to manage the way they use a computer’s memory while running. Some languages have garbage collection that constantly looks for no longer used memory as the program runs; in other languages, the programmer must explicitly allocate and free the memory. Rust uses a third approach: memory is managed through a system of ownership with a set of rules that the compiler checks at compile time. None of the ownership features slow down your program while it’s running.\u003c/p\u003e\n\u003c/blockquote\u003e\n\u003cp dir=\"auto\"\u003e关于stack和heap\u003c/p\u003e\n\u003cblockquote\u003e\n\u003cp dir=\"auto\"\u003eAll data stored on the stack must have a known, fixed size. Data with an unknown size at compile time or a size that might change must be stored on the heap instead.\u003c/p\u003e\n\u003c/blockquote\u003e\n\u003cp dir=\"auto\"\u003e关于Rust的GC\u003c/p\u003e\n\u003cdiv class=\"highlight highlight-source-rust notranslate position-relative overflow-auto\" data-snippet-clipboard-copy-content=\"{\n  let s = String::from(\u0026quot;hello\u0026quot;); // s is valid from this point forward\n  // do stuff with s\n}                                // this scope is now over, and s is no\n                                 // longer valid\"\u003e\u003cpre\u003e{\n  \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e s \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e\u003cspan class=\"pl-k\"\u003e::\u003c/span\u003e\u003cspan class=\"pl-en\"\u003efrom\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"hello\"\u003c/span\u003e); \u003cspan class=\"pl-c\"\u003e// s is valid from this point forward\u003c/span\u003e\n  \u003cspan class=\"pl-c\"\u003e// do stuff with s\u003c/span\u003e\n}                                \u003cspan class=\"pl-c\"\u003e// this scope is now over, and s is no\u003c/span\u003e\n                                 \u003cspan class=\"pl-c\"\u003e// longer valid\u003c/span\u003e\u003c/pre\u003e\u003c/div\u003e\n\u003cblockquote\u003e\n\u003cp dir=\"auto\"\u003eRust takes a different path: the memory is automatically returned once the variable that owns it goes out of scope.\u003cbr\u003e\nThere is a natural point at which we can return the memory our \u003ccode class=\"notranslate\"\u003eString\u003c/code\u003e needs to the allocator: when \u003ccode class=\"notranslate\"\u003es\u003c/code\u003e goes out of scope.\u003c/p\u003e\n\u003c/blockquote\u003e\n\u003ch2 dir=\"auto\"\u003eMove\u003c/h2\u003e\n\u003cdiv class=\"highlight highlight-source-rust notranslate position-relative overflow-auto\" data-snippet-clipboard-copy-content=\"let s1 = String::from(\u0026quot;hello\u0026quot;);\nlet s2 = s1;\n\nprintln!(\u0026quot;{}, world!\u0026quot;, s1); // error\"\u003e\u003cpre\u003e\u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e s1 \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e\u003cspan class=\"pl-k\"\u003e::\u003c/span\u003e\u003cspan class=\"pl-en\"\u003efrom\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"hello\"\u003c/span\u003e);\n\u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e s2 \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e s1;\n\n\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}, world!\"\u003c/span\u003e, s1); \u003cspan class=\"pl-c\"\u003e// error\u003c/span\u003e\u003c/pre\u003e\u003c/div\u003e\n\u003cp dir=\"auto\"\u003e当S1定义后，S2跟S1指向同一个heap variable。\u003c/p\u003e\n\u003cp dir=\"auto\"\u003e正常情况，gc时，会去gc s1，然后gc s1对应的heap variable。再去gc s2的时候，s2指向的heap variable已经被gc了。就会导致memory corruption。\u003c/p\u003e\n\u003cp dir=\"auto\"\u003e为了解决这个问题，Rust采用一种叫做move的策略。当s1定义完，s2指向s1的时候，s1自动变成invalid，即不再有效。\u003c/p\u003e\n\u003cp dir=\"auto\"\u003e针对stack-only data type，这些type会有一个特殊的anotation叫做Copy的Trait，具有copy trait的类型，可以在move之后继续使用。\u003c/p\u003e\n\u003cblockquote\u003e\n\u003cp dir=\"auto\"\u003eHere are some of the types that are \u003ccode class=\"notranslate\"\u003eCopy\u003c/code\u003e:\u003c/p\u003e\n\u003cul dir=\"auto\"\u003e\n\u003cli\u003eAll the integer types, such as \u003ccode class=\"notranslate\"\u003eu32\u003c/code\u003e.\u003c/li\u003e\n\u003cli\u003eThe Boolean type, \u003ccode class=\"notranslate\"\u003ebool\u003c/code\u003e, with values \u003ccode class=\"notranslate\"\u003etrue\u003c/code\u003e and \u003ccode class=\"notranslate\"\u003efalse\u003c/code\u003e.\u003c/li\u003e\n\u003cli\u003eAll the floating point types, such as \u003ccode class=\"notranslate\"\u003ef64\u003c/code\u003e.\u003c/li\u003e\n\u003cli\u003eThe character type, \u003ccode class=\"notranslate\"\u003echar\u003c/code\u003e.\u003c/li\u003e\n\u003cli\u003eTuples, if they only contain types that are also \u003ccode class=\"notranslate\"\u003eCopy\u003c/code\u003e. For example, \u003ccode class=\"notranslate\"\u003e(i32, i32)\u003c/code\u003e is \u003ccode class=\"notranslate\"\u003eCopy\u003c/code\u003e, but \u003ccode class=\"notranslate\"\u003e(i32, String)\u003c/code\u003e is not.\u003c/li\u003e\n\u003c/ul\u003e\n\u003c/blockquote\u003e\n\u003ch2 dir=\"auto\"\u003eDrop\u003c/h2\u003e\n\u003cp dir=\"auto\"\u003e当一个变量out of scope，Rust会自动call一个叫drop的function来帮助gc。\u003c/p\u003e\n\u003cdiv class=\"highlight highlight-source-rust notranslate position-relative overflow-auto\" data-snippet-clipboard-copy-content=\"fn main() {\n    let s = String::from(\u0026quot;hello\u0026quot;);\n    takes_ownership(s);\n  \tprintln!(\u0026quot;{}\u0026quot;, s); // error: borrow of moved value: `s`\n    let x = 5;                    \n    makes_copy(x);             \n  \tprintln!(\u0026quot;{}\u0026quot;, x); // fine\n} \nfn takes_ownership(some_string: String) {\n    println!(\u0026quot;{}\u0026quot;, some_string);\n} \nfn makes_copy(some_integer: i32) { \n    println!(\u0026quot;{}\u0026quot;, some_integer);\n}\"\u003e\u003cpre\u003e\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emain\u003c/span\u003e() {\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e s \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e\u003cspan class=\"pl-k\"\u003e::\u003c/span\u003e\u003cspan class=\"pl-en\"\u003efrom\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"hello\"\u003c/span\u003e);\n    \u003cspan class=\"pl-en\"\u003etakes_ownership\u003c/span\u003e(s);\n  \t\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, s); \u003cspan class=\"pl-c\"\u003e// error: borrow of moved value: `s`\u003c/span\u003e\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e x \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-c1\"\u003e5\u003c/span\u003e;                    \n    \u003cspan class=\"pl-en\"\u003emakes_copy\u003c/span\u003e(x);             \n  \t\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, x); \u003cspan class=\"pl-c\"\u003e// fine\u003c/span\u003e\n} \n\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003etakes_ownership\u003c/span\u003e(some_string: \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e) {\n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, some_string);\n} \n\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emakes_copy\u003c/span\u003e(some_integer: \u003cspan class=\"pl-k\"\u003ei32\u003c/span\u003e) { \n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, some_integer);\n}\u003c/pre\u003e\u003c/div\u003e\n\u003cp dir=\"auto\"\u003e第二行定义了s，调用\u003ccode class=\"notranslate\"\u003etakes_ownership\u003c/code\u003e，在第10行打印完后，some_string会out of scope, 因此被drop，\u003c/p\u003e\n\u003cp dir=\"auto\"\u003e第四行定义了x，integer是拥有Copy Trait Anotation的类型，所以可以继续使用\u003c/p\u003e\n\u003cp dir=\"auto\"\u003e想要解决第四行这个问题，可以让takes_ownership函数返回一个string，从而达到Transfer Ownership的意义。\u003c/p\u003e\n\u003cdiv class=\"highlight highlight-source-rust notranslate position-relative overflow-auto\" data-snippet-clipboard-copy-content=\"fn main() {\n    let s = String::from(\u0026quot;hello\u0026quot;);\n    let s = transfer_ownership(s);\n  \tprintln!(\u0026quot;{}\u0026quot;, s); // fine\n    let x = 5;                    \n    makes_copy(x);             \n  \tprintln!(\u0026quot;{}\u0026quot;, x); // fine\n} \nfn transfer_ownership(some_string: String) -\u0026gt; String {\n    println!(\u0026quot;{}\u0026quot;, some_string);\n    return some_string\n} \nfn makes_copy(some_integer: i32) { \n    println!(\u0026quot;{}\u0026quot;, some_integer);\n}\"\u003e\u003cpre\u003e\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emain\u003c/span\u003e() {\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e s \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e\u003cspan class=\"pl-k\"\u003e::\u003c/span\u003e\u003cspan class=\"pl-en\"\u003efrom\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"hello\"\u003c/span\u003e);\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e s \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-en\"\u003etransfer_ownership\u003c/span\u003e(s);\n  \t\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, s); \u003cspan class=\"pl-c\"\u003e// fine\u003c/span\u003e\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e x \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-c1\"\u003e5\u003c/span\u003e;                    \n    \u003cspan class=\"pl-en\"\u003emakes_copy\u003c/span\u003e(x);             \n  \t\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, x); \u003cspan class=\"pl-c\"\u003e// fine\u003c/span\u003e\n} \n\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003etransfer_ownership\u003c/span\u003e(some_string: \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e) -\u0026gt; \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e {\n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, some_string);\n    \u003cspan class=\"pl-k\"\u003ereturn\u003c/span\u003e some_string\n} \n\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emakes_copy\u003c/span\u003e(some_integer: \u003cspan class=\"pl-k\"\u003ei32\u003c/span\u003e) { \n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, some_integer);\n}\u003c/pre\u003e\u003c/div\u003e\n\u003ch2 dir=\"auto\"\u003eReference and Borrowing\u003c/h2\u003e\n\u003cp dir=\"auto\"\u003e同时上述问题可以使用reference来解决。\u003c/p\u003e\n\u003cdiv class=\"highlight highlight-source-rust notranslate position-relative overflow-auto\" data-snippet-clipboard-copy-content=\"fn main() {\n    let s = String::from(\u0026quot;hello\u0026quot;);\n    print_string(\u0026amp;s); // 传入引用，而不是move\n  \tprintln!(\u0026quot;{}\u0026quot;, s); // fine\n    let x = 5;                    \n    makes_copy(x);             \n  \tprintln!(\u0026quot;{}\u0026quot;, x); // fine\n} \nfn print_string(some_string: \u0026amp;String) { // 接受一个\u0026amp;String类型的string\n    println!(\u0026quot;{}\u0026quot;, some_string);\n} \n\nfn makes_copy(some_integer: i32) { \n    println!(\u0026quot;{}\u0026quot;, some_integer);\n}\"\u003e\u003cpre\u003e\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emain\u003c/span\u003e() {\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e s \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e\u003cspan class=\"pl-k\"\u003e::\u003c/span\u003e\u003cspan class=\"pl-en\"\u003efrom\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"hello\"\u003c/span\u003e);\n    \u003cspan class=\"pl-en\"\u003eprint_string\u003c/span\u003e(\u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003es); \u003cspan class=\"pl-c\"\u003e// 传入引用，而不是move\u003c/span\u003e\n  \t\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, s); \u003cspan class=\"pl-c\"\u003e// fine\u003c/span\u003e\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e x \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-c1\"\u003e5\u003c/span\u003e;                    \n    \u003cspan class=\"pl-en\"\u003emakes_copy\u003c/span\u003e(x);             \n  \t\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, x); \u003cspan class=\"pl-c\"\u003e// fine\u003c/span\u003e\n} \n\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003eprint_string\u003c/span\u003e(some_string: \u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003e\u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e) { \u003cspan class=\"pl-c\"\u003e// 接受一个\u0026amp;String类型的string\u003c/span\u003e\n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, some_string);\n} \n\n\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emakes_copy\u003c/span\u003e(some_integer: \u003cspan class=\"pl-k\"\u003ei32\u003c/span\u003e) { \n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, some_integer);\n}\u003c/pre\u003e\u003c/div\u003e\n\u003cp dir=\"auto\"\u003ereference不会被不拥有ownership的scope drop掉，例如print_string不拥有some_string的ownership，那他就不能drop，只有在main函数执行完才会被drop\u003c/p\u003e\n\u003cblockquote\u003e\n\u003cp dir=\"auto\"\u003eWe call having references as function parameters \u003cem\u003eborrowing\u003c/em\u003e\u003c/p\u003e\n\u003c/blockquote\u003e\n\u003cp dir=\"auto\"\u003e在传入reference的时候，如果想要修改对应reference的值，可以添加mut\u003c/p\u003e\n\u003cdiv class=\"highlight highlight-source-rust notranslate position-relative overflow-auto\" data-snippet-clipboard-copy-content=\"fn main() {\n    let mut s = String::from(\u0026quot;hello\u0026quot;);\n  \tprintln!(\u0026quot;original string: {}\u0026quot;, s); \n    print_string(\u0026amp;mut s);\n  \tprintln!(\u0026quot;after change in print string: {}\u0026quot;, s); // fine\n    let x = 5;                    \n    makes_copy(x);             \n  \tprintln!(\u0026quot;{}\u0026quot;, x); // fine\n} \nfn print_string(some_string: \u0026amp;mut String) { // 接受一个\u0026amp;mut String类型的string\n    some_string.push_str(\u0026quot;, world\u0026quot;);\n    println!(\u0026quot;{}\u0026quot;, some_string);\n} \n\nfn makes_copy(some_integer: i32) { \n    println!(\u0026quot;{}\u0026quot;, some_integer);\n}\"\u003e\u003cpre\u003e\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emain\u003c/span\u003e() {\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e \u003cspan class=\"pl-k\"\u003emut\u003c/span\u003e s \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e\u003cspan class=\"pl-k\"\u003e::\u003c/span\u003e\u003cspan class=\"pl-en\"\u003efrom\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"hello\"\u003c/span\u003e);\n  \t\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"original string: {}\"\u003c/span\u003e, s); \n    \u003cspan class=\"pl-en\"\u003eprint_string\u003c/span\u003e(\u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003e\u003cspan class=\"pl-k\"\u003emut\u003c/span\u003e s);\n  \t\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"after change in print string: {}\"\u003c/span\u003e, s); \u003cspan class=\"pl-c\"\u003e// fine\u003c/span\u003e\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e x \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-c1\"\u003e5\u003c/span\u003e;                    \n    \u003cspan class=\"pl-en\"\u003emakes_copy\u003c/span\u003e(x);             \n  \t\u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, x); \u003cspan class=\"pl-c\"\u003e// fine\u003c/span\u003e\n} \n\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003eprint_string\u003c/span\u003e(some_string: \u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003e\u003cspan class=\"pl-k\"\u003emut\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e) { \u003cspan class=\"pl-c\"\u003e// 接受一个\u0026amp;mut String类型的string\u003c/span\u003e\n    some_string.\u003cspan class=\"pl-en\"\u003epush_str\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\", world\"\u003c/span\u003e);\n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, some_string);\n} \n\n\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emakes_copy\u003c/span\u003e(some_integer: \u003cspan class=\"pl-k\"\u003ei32\u003c/span\u003e) { \n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, some_integer);\n}\u003c/pre\u003e\u003c/div\u003e\n\u003cblockquote\u003e\n\u003cp dir=\"auto\"\u003eBut mutable references have one big restriction: you can have only one mutable reference to a particular piece of data in a particular scope.\u003c/p\u003e\n\u003c/blockquote\u003e\n\u003cdiv class=\"highlight highlight-source-rust notranslate position-relative overflow-auto\" data-snippet-clipboard-copy-content=\"fn main () {\n    let mut s = String::from(\u0026quot;hello\u0026quot;);\n    let r1 = \u0026amp;mut s;\n    let r2 = \u0026amp;mut s; // error: cannot borrow `s` as mutable more than once at a time\n\n    println!(\u0026quot;{}, {}\u0026quot;, r1, r2);\n}\"\u003e\u003cpre\u003e\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emain\u003c/span\u003e () {\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e \u003cspan class=\"pl-k\"\u003emut\u003c/span\u003e s \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e\u003cspan class=\"pl-k\"\u003e::\u003c/span\u003e\u003cspan class=\"pl-en\"\u003efrom\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"hello\"\u003c/span\u003e);\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e r1 \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003e\u003cspan class=\"pl-k\"\u003emut\u003c/span\u003e s;\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e r2 \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003e\u003cspan class=\"pl-k\"\u003emut\u003c/span\u003e s; \u003cspan class=\"pl-c\"\u003e// error: cannot borrow `s` as mutable more than once at a time\u003c/span\u003e\n\n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}, {}\"\u003c/span\u003e, r1, r2);\n}\u003c/pre\u003e\u003c/div\u003e\n\u003cblockquote\u003e\n\u003cp dir=\"auto\"\u003eThe benefit of having this restriction is that Rust can prevent data races at compile time.\u003c/p\u003e\n\u003c/blockquote\u003e\n\u003cdiv class=\"highlight highlight-source-rust notranslate position-relative overflow-auto\" data-snippet-clipboard-copy-content=\"fn main () {\n    let mut s = String::from(\u0026quot;hello\u0026quot;);\n\n    let r1 = \u0026amp;s; // no problem\n    let r2 = \u0026amp;s; // no problem\n    println!(\u0026quot;{} and {}\u0026quot;, r1, r2);\n    // r1 and r2 are no longer used after this point\n    \n    let r3 = \u0026amp;mut s; // no problem\n    println!(\u0026quot;{}\u0026quot;, r3);\n}\"\u003e\u003cpre\u003e\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003emain\u003c/span\u003e () {\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e \u003cspan class=\"pl-k\"\u003emut\u003c/span\u003e s \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e\u003cspan class=\"pl-k\"\u003e::\u003c/span\u003e\u003cspan class=\"pl-en\"\u003efrom\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"hello\"\u003c/span\u003e);\n\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e r1 \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003es; \u003cspan class=\"pl-c\"\u003e// no problem\u003c/span\u003e\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e r2 \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003es; \u003cspan class=\"pl-c\"\u003e// no problem\u003c/span\u003e\n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{} and {}\"\u003c/span\u003e, r1, r2);\n    \u003cspan class=\"pl-c\"\u003e// r1 and r2 are no longer used after this point\u003c/span\u003e\n    \n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e r3 \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003e\u003cspan class=\"pl-k\"\u003emut\u003c/span\u003e s; \u003cspan class=\"pl-c\"\u003e// no problem\u003c/span\u003e\n    \u003cspan class=\"pl-c1\"\u003eprintln!\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"{}\"\u003c/span\u003e, r3);\n}\u003c/pre\u003e\u003c/div\u003e\n\u003ch2 dir=\"auto\"\u003eDangling Pointer\u003c/h2\u003e\n\u003cdiv class=\"highlight highlight-source-rust notranslate position-relative overflow-auto\" data-snippet-clipboard-copy-content=\"fn dangle() -\u0026gt; \u0026amp;String { // dangle returns a reference to a String\n\n    let s = String::from(\u0026quot;hello\u0026quot;); // s is a new String\n\n    \u0026amp;s // we return a reference to the String, s\n} // Here, s goes out of scope, and is dropped. Its memory goes away.\n  // Danger!\"\u003e\u003cpre\u003e\u003cspan class=\"pl-k\"\u003efn\u003c/span\u003e \u003cspan class=\"pl-en\"\u003edangle\u003c/span\u003e() -\u0026gt; \u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003e\u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e { \u003cspan class=\"pl-c\"\u003e// dangle returns a reference to a String\u003c/span\u003e\n\n    \u003cspan class=\"pl-k\"\u003elet\u003c/span\u003e s \u003cspan class=\"pl-k\"\u003e=\u003c/span\u003e \u003cspan class=\"pl-k\"\u003eString\u003c/span\u003e\u003cspan class=\"pl-k\"\u003e::\u003c/span\u003e\u003cspan class=\"pl-en\"\u003efrom\u003c/span\u003e(\u003cspan class=\"pl-s\"\u003e\"hello\"\u003c/span\u003e); \u003cspan class=\"pl-c\"\u003e// s is a new String\u003c/span\u003e\n\n    \u003cspan class=\"pl-k\"\u003e\u0026amp;\u003c/span\u003es \u003cspan class=\"pl-c\"\u003e// we return a reference to the String, s\u003c/span\u003e\n} \u003cspan class=\"pl-c\"\u003e// Here, s goes out of scope, and is dropped. Its memory goes away.\u003c/span\u003e\n  \u003cspan class=\"pl-c\"\u003e// Danger!\u003c/span\u003e\u003c/pre\u003e\u003c/div\u003e"},"__N_SSG":true},"page":"/post/[id]","query":{"id":"19"},"buildId":"PBrnuE0mkYHGFXQo1frw9","assetPrefix":"/blog","isFallback":false,"gsp":true,"scriptLoader":[]}</script></body></html>

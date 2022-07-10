@@ -1,0 +1,1 @@
+{"pageProps":{"html":"<ul dir=\"auto\">\n<li>添加额外的binary至Path\n<ul dir=\"auto\">\n<li>打开/etc/profile文件</li>\n<li>输入 <code class=\"notranslate\">export PATH=\"/home/hao/.deno/bin:$PATH\"</code></li>\n<li>执行 <code class=\"notranslate\">source /etc/profile</code></li>\n</ul>\n</li>\n</ul>"},"__N_SSG":true}
