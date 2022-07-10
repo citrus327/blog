@@ -12,3 +12,12 @@ body {
   box-sizing: border-box;
   color: #444;
 }
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}
