@@ -1,4 +1,4 @@
-name: Publish to NPM
+name: Auto Github Pages
 on:
   push:
     branches: ["main"]
