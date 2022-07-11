@@ -1,6 +1,6 @@
-# A Revamp of my old blog
+# A Revamp of My Old Blog
 
-> Still in construction. Stay tuned.
+> in construction. Stay tuned.
 
 see: https://phshy0607.github.io/blog/
 
