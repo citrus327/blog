@@ -7,5 +7,13 @@ export const ListItem = (props) => {
 
 export const ListItemContainer = (props) => {
   const { children } = props;
-  return <div className={styles.listItemContainer}>{children}</div>;
+  return (
+    <div
+      className={[styles.listItemContainer, props.className]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {children}
+    </div>
+  );
 };

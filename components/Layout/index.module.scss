@@ -15,12 +15,13 @@
 }
 
 .main {
-  overflow: auto;
+  overflow: hidden;
   flex: 1 1 auto;
   overflow: auto;
   display: flex;
   flex-direction: column;
-  padding-bottom: 2rem !important;
+  padding-bottom: 6rem !important;
+
 }
 
 @media screen and (max-width: 2560px) {

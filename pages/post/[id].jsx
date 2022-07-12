@@ -6,7 +6,7 @@ const Post = (props) => {
   return (
     <Layout>
       <div
-        className="markdown-body"
+        className="markdown-body scroller"
         dangerouslySetInnerHTML={{
           __html: props.html,
         }}
