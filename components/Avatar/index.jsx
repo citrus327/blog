@@ -8,7 +8,12 @@ const myLoader = ({ src }) => {
 
 export const Avatar = () => {
   return (
-    <div className={styles.avatar}>
+    <div
+      className={styles.avatar}
+      onClick={() => {
+        window.open("https://github.com/phshy0607");
+      }}
+    >
       <Image
         loader={myLoader}
         src="17166940"

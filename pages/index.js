@@ -1,9 +1,7 @@
 import Layout from "../components/Layout";
-import { RecentList } from "../components/RecentList";
 import { getRecentIssues } from "../lib/api";
 
-export default function Home(props) {
-  const { data } = props;
+function Home() {
   return (
     <Layout>
       <div
@@ -21,6 +19,8 @@ export default function Home(props) {
     </Layout>
   );
 }
+
+export default Home;
 
 export async function getStaticProps() {
   const data = await getRecentIssues();
