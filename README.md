@@ -2,6 +2,5 @@
 
 > in construction. Stay tuned.
 
-see: https://phshy0607.github.io/blog/
+see: https://citrus327.github.io/blog
 
-old blog: https://phshy0607.github.io/minimal-life/
