@@ -22,7 +22,7 @@ const Posts = (props) => {
 
   return (
     <Layout>
-      <div style={{ marginBottom: "12px", fontWeight: "bold" }}>Tags</div>
+      {/* <div style={{ marginBottom: "12px", fontWeight: "bold" }}>Tags</div>
       <div
         style={{ display: "flex", alignItems: "center", marginBottom: "12px" }}
       >
@@ -46,7 +46,7 @@ const Posts = (props) => {
             );
           })}
         </div>
-      </div>
+      </div> */}
       <ListItemContainer className="scroller">
         {filteredData.map((o) => {
           return (

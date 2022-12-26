@@ -8,8 +8,8 @@ export default function Layout({ children }) {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Minimal Life</title>
-        <meta name="description" content="Minimal Life Blog" />
+        <title>Citrus327</title>
+        <meta name="description" content="Citrus327 Blog" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header className={styles.header}>

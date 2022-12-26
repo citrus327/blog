@@ -11,7 +11,7 @@ export const Avatar = () => {
     <div
       className={styles.avatar}
       onClick={() => {
-        window.open("https://github.com/phshy0607");
+        window.open("https://github.com/citrus327");
       }}
     >
       <Image
