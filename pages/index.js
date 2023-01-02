@@ -27,7 +27,7 @@ function Home() {
       return isInRange(new Date(), o.range);
     });
 
-    return target.emoji;
+    return target?.emoji || "";
   };
   return (
     <Layout>
