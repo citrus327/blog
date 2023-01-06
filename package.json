@@ -15,8 +15,11 @@
     "@types/react-dom": "18.0.10",
     "next": "13.1.1",
     "notion-client": "^6.15.6",
+    "notion-types": "^6.15.6",
+    "notion-utils": "^6.15.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-notion-x": "^6.15.7",
     "typescript": "4.9.4"
   }
 }
