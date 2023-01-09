@@ -43,7 +43,6 @@ export const NotionPage = ({
   }
 
   const title = getPageTitle(recordMap);
-  console.log(title, recordMap);
 
   return (
     <>
@@ -56,7 +55,6 @@ export const NotionPage = ({
       <NotionRenderer
         recordMap={recordMap}
         fullPage={true}
-        darkMode={false}
         rootPageId={rootPageId}
         components={{
           Code,

@@ -1,20 +1,11 @@
 import * as React from "react";
-
-import { ExtendedRecordMap } from "notion-types";
-
+import { ExtendedRecordMap, TableCollectionView } from "notion-types";
 import { NotionPage } from "../components/NotionPage";
 import { rootNotionPageId } from "../lib/config";
 import notion from "../lib/notion";
-// core styles shared by all of react-notion-x (required)
-import "react-notion-x/src/styles.css";
 
-// used for code syntax highlighting (optional)
-import "prismjs/themes/prism-tomorrow.css";
-
-// used for rendering equations (optional)
-import "katex/dist/katex.min.css";
 export const getStaticProps = async (context) => {
-  const pageId = (context.params.pageId as string) || rootNotionPageId!;
+  const pageId = context.params.pageId as string;
   const recordMap = await notion.getPage(pageId);
 
   return {
@@ -26,8 +17,21 @@ export const getStaticProps = async (context) => {
 };
 
 export async function getStaticPaths() {
+  const recordMap = await notion.getPage(rootNotionPageId as string);
+
+  const paths = Object.values(recordMap.collection_view)
+    .filter((o) => {
+      const collectionView = o.value;
+      return collectionView.type === "table";
+    })
+    .map((o) => (o.value as TableCollectionView).page_sort)
+    .flat()
+    .map((o) => {
+      return `/${o.replaceAll("-", "")}`;
+    });
+
   return {
-    paths: [],
+    paths: paths,
     fallback: true,
   };
 }
