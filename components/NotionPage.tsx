@@ -1,6 +1,6 @@
 import * as React from "react";
 import Head from "next/head";
-
+import getConfig from "next/config";
 import { ExtendedRecordMap } from "notion-types";
 import { getPageTitle } from "notion-utils";
 import { NotionRenderer } from "react-notion-x";
@@ -53,6 +53,9 @@ export const NotionPage = ({
       </Head>
 
       <NotionRenderer
+        mapPageUrl={(pageId) => {
+          return `${getConfig().publicRuntimeConfig.basePath}/${pageId}`;
+        }}
         recordMap={recordMap}
         fullPage={true}
         rootPageId={rootPageId}
