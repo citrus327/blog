@@ -54,7 +54,9 @@ export const NotionPage = ({
 
       <NotionRenderer
         mapPageUrl={(pageId) => {
-          return `${getConfig().publicRuntimeConfig.basePath}/${pageId}`;
+          return `${
+            getConfig().publicRuntimeConfig.basePath
+          }/${pageId.replaceAll("-", "")}`;
         }}
         recordMap={recordMap}
         fullPage={true}
