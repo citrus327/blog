@@ -33,9 +33,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build
-        run: |
-          pnpm run build
-          pnpm run export
+        run: pnpm run build
+        env:
+          ROOT_PAGE_ID: ${{secrets.ROOT_PAGE_ID}}
+      - name: Export
+        run: pnpm run export
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
