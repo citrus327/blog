@@ -28,7 +28,8 @@ export async function getStaticPaths() {
     .flat()
     .map((o) => {
       return `/${o.replaceAll("-", "")}`;
-    });
+    })
+    .concat(`/${rootNotionPageId}`);
 
   return {
     paths: paths,
