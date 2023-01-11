@@ -2,7 +2,7 @@ name: Auto Github Pages
 on:
   workflow_dispatch:
   push:
-    branches: ["blog"]
+    branches: ["notion"]
 jobs:
   build:
     runs-on: ubuntu-latest
