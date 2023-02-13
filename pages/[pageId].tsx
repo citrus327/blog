@@ -6,14 +6,19 @@ import notion from "../lib/notion";
 
 export const getStaticProps = async (context) => {
   const pageId = context.params.pageId as string;
-  const recordMap = await notion.getPage(pageId);
-
-  return {
-    props: {
-      recordMap,
-    },
-    revalidate: 10,
-  };
+  try {
+    const recordMap = await notion.getPage(pageId);
+    return {
+      props: {
+        recordMap,
+      },
+      revalidate: 10,
+    };
+  } catch (e) {
+    return {
+      props: {},
+    };
+  }
 };
 
 export async function getStaticPaths() {
