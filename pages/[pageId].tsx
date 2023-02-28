@@ -27,7 +27,7 @@ export async function getStaticPaths() {
   const paths = Object.values(recordMap.collection_view)
     .filter((o) => {
       const collectionView = o.value;
-      return collectionView.type === "table";
+      return collectionView.type === "list";
     })
     .map((o) => (o.value as TableCollectionView).page_sort)
     .flat()
