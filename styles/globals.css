@@ -16,3 +16,16 @@ body {
 .notion-header .breadcrumb:first-child .title {
   display: none;
 }
+.notion-collection-header {
+  display: none;
+}
+
+.notion-collection {
+  max-width: 100%;
+}
+
+@media screen and (max-width: 500px) {
+  .notion-list-item-property {
+    display: none;
+  }
+}
