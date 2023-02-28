@@ -1,5 +1,9 @@
 import * as React from "react";
-import { ExtendedRecordMap, TableCollectionView } from "notion-types";
+import {
+  ExtendedRecordMap,
+  ListCollectionView,
+  TableCollectionView,
+} from "notion-types";
 import { NotionPage } from "../components/NotionPage";
 import { rootNotionPageId } from "../lib/config";
 import notion from "../lib/notion";
@@ -27,9 +31,12 @@ export async function getStaticPaths() {
   const paths = Object.values(recordMap.collection_view)
     .filter((o) => {
       const collectionView = o.value;
-      return collectionView.type !== "gallery";
+      return collectionView.type === "list";
     })
-    .map((o) => (o.value as TableCollectionView).page_sort)
+    .map((o) => {
+      // @ts-ignore
+      return (o.value as ListCollectionView).page_sort;
+    })
     .flat()
     .map((o) => {
       return `/${o.replaceAll("-", "")}`;
