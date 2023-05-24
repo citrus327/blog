@@ -1,5 +1,3 @@
-# Blog
-
-https://citrus327.github.io/blog/
-
-Powered by Next.js and Notion.
+> My blog has moved to https://blog.hophop.work
+> 
+> Please checkout https://github.com/citrus327/notionic for more.
